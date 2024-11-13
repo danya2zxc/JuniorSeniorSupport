@@ -1,16 +1,16 @@
-"""Initial migration
+"""Update foreign keys
 
-Revision ID: 4d9cba7ec22c
-Revises: 
-Create Date: 2024-11-05 13:53:18.894434
+Revision ID: 5ec4e5882243
+Revises: 285db968046b
+Create Date: 2024-11-13 15:10:35.794263
 
 """
 
 from typing import Sequence, Union
 
 # revision identifiers, used by Alembic.
-revision: str = "4d9cba7ec22c"
-down_revision: Union[str, None] = None
+revision: str = "5ec4e5882243"
+down_revision: Union[str, None] = "285db968046b"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

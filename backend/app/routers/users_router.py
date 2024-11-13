@@ -1,7 +1,7 @@
 from typing import List
 
+from app.database import get_async_session
 from crud.user_crud import UserCRUD
-from database import get_async_session
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from schemas.users_schema import UserCreate, UserResponse
@@ -29,12 +29,15 @@ async def get_user(user_id: int, db: Session = Depends(get_async_session)):
 
 
 @router.post("", response_model=UserResponse)
-async def create_user(user_data: UserCreate, db: Session = Depends(get_async_session)):
+async def create_user(
+    user_data: UserCreate, db: Session = Depends(get_async_session)
+):
     user_crud = UserCRUD(db)
     existing_user = await user_crud.get_by_email(user_data.email)
     if existing_user:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
         )
     new_user = await user_crud.create_user(user_data)
     return new_user

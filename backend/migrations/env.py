@@ -4,10 +4,10 @@ from pathlib import Path
 
 from alembic import context
 from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
-from app.database import Base
+from app.models import Base
 from sqlalchemy import engine_from_config, pool
 
-backend_path = Path(__file__).resolve().parent.parent  # Путь до backend
+backend_path = Path(__file__).resolve().parent.parent
 sys.path.append(str(backend_path))
 
 
@@ -32,6 +32,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -70,6 +71,11 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    alembic_config = config.get_section(config.config_ini_section)
+    alembic_config["sqlalchemy.url"] = (
+        f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -77,7 +83,9 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection, target_metadata=target_metadata, compare_type=True
+        )
 
         with context.begin_transaction():
             context.run_migrations()

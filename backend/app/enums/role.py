@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class Role(str, Enum):
-    SENIOR = "Senior"
-    JUNIOR = "Junior"
-    ADMIN = "Admin"
+    SENIOR = "senior"
+    JUNIOR = "junior"
+    ADMIN = "admin"

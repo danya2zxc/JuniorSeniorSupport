@@ -1,11 +1,12 @@
-from models.users_model import User
+from models.users_models import User
 from schemas.users_schema import UserCreate
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class UserCRUD:
-    def __init__(self, db: Session):
+
+    def __init__(self, db: AsyncSession):  #
         self.db = db
 
     async def get_all(self, skip: int = 0, limit: int = 100):
@@ -14,7 +15,6 @@ class UserCRUD:
         return result.scalars().all()
 
     async def get_by_id(self, user_id: int):
-
         query = select(User).filter(User.id == user_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none()

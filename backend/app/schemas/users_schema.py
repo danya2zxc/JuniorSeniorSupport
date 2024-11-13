@@ -1,3 +1,4 @@
+from enums.role import Role
 from pydantic import BaseModel
 
 
@@ -12,7 +13,7 @@ class UserResponse(BaseModel):
 
 class UserCreate(BaseModel):
     email: str
-    # role: str
+    role: Role
     hashed_password: str
     last_name: str
 
