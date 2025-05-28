@@ -10,18 +10,19 @@ psycopg2-binary = "*"
 redis = {version ="~=5.0", extras=["hiredis"]}
 requests = "~=2.0.0"
 gunicorn = "==22.0.0"
-fastapi = "*"
-pydantic = "*"
-fastapi-users = {"version" = "*", "extras" =["sqlalchemy"]}
-asyncpg = "*"
 alembic = "*"
 sqlalchemy = "*"
+fastapi = {extras = ["standard"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "*"}
+pyjwt = "*"
+pydantic = "*"
+pydantic-settings = "*"
+pre-commit = "*"
 
 [dev-packages]
 black = "~=24.3.0"
 isort = "~=5.13.2"
 ruff = "~=0.3.3"
-
 
 [requires]
 python_version = "3.11"
