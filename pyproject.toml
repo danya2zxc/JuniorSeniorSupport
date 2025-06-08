@@ -1,3 +1,36 @@
+[tool.poetry]
+name = "JuniorSeniorSupport"
+version = "0.1.0"
+description = "FastAPI backend"
+authors = ["Daniel Balzhyk <danya2zxc@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+fastapi = {extras = ["standard"], version = "*"}
+sqlalchemy = ">=2.0"
+alembic = "*"
+celery = "==5.5.0"
+passlib = {extras = ["bcrypt"], version = "==1.7.4"}
+pyjwt = "*"
+pydantic = ">=2.0"
+pydantic-settings = ">=2.0"
+psycopg2-binary = "*"
+gunicorn = "==22.0.0"
+asyncpg = "^0.30.0"
+bcrypt = "4.3.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "~=24.3.0"
+isort = "~=5.13.2"
+ruff = "~=0.3.3"
+pre-commit = "*"
+watchdog = "^6.0.0"
+
+
 [tool.tox]
 legacy_tox_ini = """
     [tox]
@@ -14,27 +47,6 @@ legacy_tox_ini = """
 """
 
 
-[project]
-name = "changeme"
-version = "0.1.0"
-dependencies = ["loguru>=0.7", "pydantic-settings>=2.0", "pydantic[email]>=2.4"]
-
-[project.optional-dependencies]
-dev = [
-    "black>=23.9",
-    "httpx>=0.25",
-    "isort>=5.12",
-    "mypy>=1.5",
-    "polyfactory>=2.9",
-    "pytest-cov>=4.1",
-    "pytest-env>=1.0",
-    "pytest-lazy-fixture>=0.6",
-    "pytest-mock>=3.11",
-    "pytest>=7.4",
-    "ruff>=0.0.292",
-    "tox>=4.11",
-]
-
 
 [tool.pip-tools]
 generate_hashes = true
@@ -44,6 +56,7 @@ generate_hashes = true
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
 lint.select = ["E", "F"]
 lint.ignore = []
+
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 lint.fixable = [
@@ -119,6 +132,7 @@ exclude = [
     "venv",
     "Makefile",
     "migrations",
+    "alembic"
 ]
 
 
@@ -156,7 +170,7 @@ exclude = '''
     | dist
     | migrations
   )/
-                     # the root of the project
+    # the root of the project
 )
 '''
 
@@ -171,7 +185,6 @@ skip = '.venv,venv,env'
 src_paths = ["src"]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = 'config.settings'
 pythonpath = '..'
 
 addopts = '-s -v --cache-clear'
@@ -185,7 +198,7 @@ filterwarnings = ['ignore::RuntimeWarning', 'ignore::UserWarning', 'ignore:Depre
 omit = ["*/conftest.py", "*/test_*.py", "*/migrations/"]
 
 # [tool.mypy]
-# plugins = ["pydantic.mypy", "django-stubs"]
+# plugins = ["pydantic.mypy"]
 # python_version = '3.11'
 # files = ['*.py']
 # warn_redundant_casts = true
@@ -204,3 +217,4 @@ omit = ["*/conftest.py", "*/test_*.py", "*/migrations/"]
 exclude = ["**/__pycache__", "**/venv/*", "**/migrations/*"]
 typeCheckingMode = "basic"                                   # off, basic, strict
 useLibraryCodeForTypes = true
+

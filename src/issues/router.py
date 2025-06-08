@@ -46,7 +46,6 @@ async def issue_create(
     issue_crud: IssueCRUD = Depends(get_issue_crud),
     current_user: User = Depends(RoleChecker(Role.ADMIN, Role.JUNIOR)),
 ):
-
     return await issue_crud.create_issue(issue_data, junior_id=current_user.id)
 
 
@@ -55,12 +54,11 @@ async def issue_create_random(
     current_user: User = Depends(get_current_user),
     issue_crud: IssueCRUD = Depends(get_issue_crud),
 ):
-
     return await issue_crud.create_random_issue()
 
 
 @router.patch("/{issue_id}", response_model=IssueResponse)
-async def update_issue(
+async def issue_update(
     issue_id: int,
     issue_data: IssueBase = Depends(IssueCreate.as_form),
     current_user: User = Depends(get_current_user),
@@ -80,7 +78,7 @@ async def update_issue(
 
 
 @router.delete("/{issue_id}")
-async def delete_issue(
+async def issue_delete(
     issue_id: int,
     issue_crud: IssueCRUD = Depends(get_issue_crud),
     current_user: User = Depends(RoleChecker(Role.ADMIN)),
@@ -92,7 +90,7 @@ async def delete_issue(
 
 
 @router.put("/{issue_id}/take", response_model=IssueResponse)
-async def take_issue(
+async def issue_take(
     issue_id: int,
     issue_crud: IssueCRUD = Depends(get_issue_crud),
     current_user: User = Depends(RoleChecker(Role.SENIOR)),
@@ -101,7 +99,7 @@ async def take_issue(
 
 
 @router.get("/{issue_id}/messages", response_model=list[MessageResponse])
-async def get_issue_messages(
+async def issue_messages_get(
     issue_id: int,
     message_crud: MessageCRUD = Depends(get_message_crud),
     current_user: User = Depends(get_current_user),
@@ -110,7 +108,7 @@ async def get_issue_messages(
 
 
 @router.put("/{issue_id}/close", response_model=IssueResponse)
-async def close_issue(
+async def issue_close(
     issue_id: int,
     issue_crud: IssueCRUD = Depends(get_issue_crud),
     current_user: User = Depends(RoleChecker(Role.SENIOR)),
@@ -119,13 +117,12 @@ async def close_issue(
 
 
 @router.post("/{issue_id}/messages", response_model=MessageResponse)
-async def post_issue_message(
+async def issue_message_post(
     issue_id: int,
     message_data: MessageCreate,
     message_crud: MessageCRUD = Depends(get_message_crud),
     current_user: User = Depends(get_current_user),
 ):
-
     return await message_crud.create_for_issue(
         issue_id, current_user, message_data
     )

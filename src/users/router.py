@@ -30,15 +30,6 @@ async def users_list(
     return await user_crud.get_all(skip, limit)
 
 
-@router.get("/me", response_model=UserResponse)
-async def user_me(
-    user_crud: UserCRUD = Depends(get_user_crud),
-    current_user: User = Depends(get_current_user),
-):
-    user = await user_crud.get_by_email(current_user.email)
-    return user
-
-
 @router.get("/{user_id}", response_model=UserResponse)
 async def user_get_by_id(
     user_id: int,
@@ -66,7 +57,7 @@ async def user_create(
 
 
 @router.patch("/me", response_model=UserResponse)
-async def update_me(
+async def me_update(
     user_data: UserUpdate,
     user_crud: UserCRUD = Depends(get_user_crud),
     current_user: User = Depends(get_current_user),
@@ -78,7 +69,7 @@ async def update_me(
 
 
 @router.patch("/{user_id}", response_model=UserResponse)
-async def update_user(
+async def user_update(
     user_id: int,
     user_data: UserUpdate,
     user_crud: UserCRUD = Depends(get_user_crud),
@@ -92,7 +83,7 @@ async def update_user(
 
 
 @router.delete("/{user_id}", status_code=204)
-async def delete_user(
+async def user_delete(
     user_id: int,
     user_crud: UserCRUD = Depends(get_user_crud),
     _: User = Depends(RoleChecker(Role.ADMIN)),
@@ -100,6 +91,16 @@ async def delete_user(
     user = await user_crud.delete_user(user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    return
+
+
+@router.delete("/me")
+async def delete_me(
+    current_user: User = Depends(get_current_user),
+    user_crud: UserCRUD = Depends(get_user_crud),
+):
+    await user_crud.delete_user(current_user.id)
+
     return
 
 
@@ -117,3 +118,12 @@ async def update_my_password(
         status_code=status.HTTP_200_OK,
         content={"detail": "Password changed successfully"},
     )
+
+
+@router.get("/me", response_model=UserResponse)
+async def user_me(
+    user_crud: UserCRUD = Depends(get_user_crud),
+    current_user: User = Depends(get_current_user),
+):
+    user = await user_crud.get_by_email(current_user.email)
+    return user

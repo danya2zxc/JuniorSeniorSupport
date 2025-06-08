@@ -3,6 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.auth.security import get_password_hash, verify_password
+from src.mailing.service import send_mail
 from src.users.models import User
 from src.users.schemas import UserCreate, UserUpdate
 
@@ -36,6 +37,9 @@ class UserCRUD:
         self.db.add(new_user)
         await self.db.commit()
         await self.db.refresh(new_user)
+
+        send_mail.delay("user@gandon.com")
+
         return new_user
 
     async def update_user(self, user_id: int, update_data: UserUpdate):
@@ -52,7 +56,6 @@ class UserCRUD:
     async def change_password(
         self, user_id: int, old_password: str, new_password: str
     ):
-
         user = await self.get_by_id(user_id=user_id)
         if user is None:
             return None

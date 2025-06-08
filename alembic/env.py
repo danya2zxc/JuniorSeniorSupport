@@ -18,10 +18,10 @@ sys.path.append(
 config = context.config
 
 DB_USER = settings.db.postgres_user
-DB_PASS = settings.db.postgres_pass
+DB_PASS = settings.db.postgres_password
 DB_HOST = settings.db.postgres_host
 DB_PORT = str(settings.db.postgres_port)
-DB_NAME = settings.db.postgres_name
+DB_NAME = settings.db.postgres_db
 SYNC_DATABASE_URL = (
     f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )

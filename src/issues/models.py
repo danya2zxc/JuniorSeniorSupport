@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
 from src.issues.enums import Status
-from src.models.base_types import intpk
+from src.shared.base_types import intpk
 
 
 class Issue(Base):

@@ -77,7 +77,7 @@ uvicorn src.main:app --reload
 
 ```bash
 pre-commit install
-pre-commit run --all-files
+pre-commit 
 ```
 
 ---

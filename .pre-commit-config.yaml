@@ -1,25 +1,15 @@
 repos:
-- repo: local
-  hooks:
-    - id: black
-      name: "Checking formatting"
-      entry: black --check .
-      language: system
-      types: [python]
-      pass_filenames: false
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
+    hooks:
+      - id: ruff-check
 
-    - id: isort
-      name: "Checking imports"
-      entry: isort --check-only .
-      language: system
-      types: [python]
-      pass_filenames: false
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
 
-
-    - id: ruff
-      name: "Running linter"
-      entry: ruff .
-      language: system
-      types: [python]
-      pass_filenames: false
-
+  - repo: https://github.com/PyCQA/isort
+    rev: 6.0.0
+    hooks:
+      - id: isort

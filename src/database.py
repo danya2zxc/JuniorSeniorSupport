@@ -12,17 +12,17 @@ from sqlalchemy.pool import NullPool
 from src.config import settings
 
 DB_USER = settings.db.postgres_user
-DB_PASS = settings.db.postgres_pass
+DB_PASS = settings.db.postgres_password
 DB_HOST = settings.db.postgres_host
 DB_PORT = settings.db.postgres_port
-DB_NAME = settings.db.postgres_name
+DB_NAME = settings.db.postgres_db
 
 
 DATABASE_URL = (
     f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
+engine = create_async_engine(DATABASE_URL, poolclass=NullPool, echo=True)
 async_session_maker = async_sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
