@@ -8,22 +8,34 @@ on:
     branches:
       - main
 
-
 jobs:
   code-quality:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create false
+
       - name: Install dependencies
-        run: pip install pipenv && pipenv install --dev --system
-        
+        run: poetry install --with dev --no-interaction --no-ansi
+
       - name: Run formatters
         run: |
-          python -m black --check .
-          python -m isort --check .
-          
+          poetry run black --check .
+          poetry run isort --check .
+
       - name: Run linter
-        run: python -m ruff .
+        run: poetry run ruff .
