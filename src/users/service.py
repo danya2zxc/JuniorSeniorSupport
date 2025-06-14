@@ -2,8 +2,8 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.auth.security import get_password_hash, verify_password
-from src.mailing.service import send_mail
+from src.mailing.service import ActivationService
+from src.shared.security import get_password_hash, verify_password
 from src.users.models import User
 from src.users.schemas import UserCreate, UserUpdate
 
@@ -38,7 +38,10 @@ class UserCRUD:
         await self.db.commit()
         await self.db.refresh(new_user)
 
-        send_mail.delay("user@gandon.com")
+        activation = ActivationService()
+        token = activation.create_token(user_data.email)
+        activation.send_user_activation_email(user_data.email, token)
+        activation.save_activation_information(new_user.id, token)
 
         return new_user
 
@@ -77,5 +80,13 @@ class UserCRUD:
         if user is None:
             return None
         await self.db.delete(user)
+        await self.db.commit()
+        return user
+
+    async def mark_as_verified(self, user_id: int):
+        user = await self.db.get(User, user_id)
+        if not user:
+            raise HTTPException(404, "User not found")
+        user.is_verified = True
         await self.db.commit()
         return user

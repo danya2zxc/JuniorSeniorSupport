@@ -16,6 +16,14 @@ class DbSettings(BaseSettings):
         extra = "ignore"
 
 
+class CacheSettings(BaseSettings):
+    redis_url: str
+
+    class Config:
+        env_file = Path(__file__).resolve().parents[1] / ".env"
+        extra = "ignore"
+
+
 class CelerySettings(BaseSettings):
     celery_broker_url: str
     celery_result_backend: str
@@ -25,9 +33,23 @@ class CelerySettings(BaseSettings):
         extra = "ignore"
 
 
+class EmailSetting(BaseSettings):
+    mail_username: str
+    mail_password: str
+    mail_from: str
+    mail_port: int
+    mail_server: str
+
+    class Config:
+        env_file = Path(__file__).resolve().parents[1] / ".env"
+        extra = "ignore"
+
+
 class Settings(BaseSettings):
     db: DbSettings = DbSettings()  # type: ignore
     celery: CelerySettings = CelerySettings()  # type: ignore
+    email: EmailSetting = EmailSetting()  # type: ignore
+    cache: CacheSettings = CacheSettings()  # type: ignore
 
     secret_key: str
     access_token_expire_minutes: int = Field(

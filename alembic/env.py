@@ -38,11 +38,14 @@ config.set_section_option(section, "DB_PASS", DB_PASS)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+from src.issues.models import Issue  # noqa
+from src.issues.models import Message  # noqa
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
+from src.users.models import User  # noqa
 
 target_metadata = Base.metadata
 

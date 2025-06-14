@@ -22,7 +22,7 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(30), nullable=True)
     last_name: Mapped[str] = mapped_column(String(50), nullable=True)
 
-    is_active: Mapped[bool] = mapped_column(default=True)
+    is_verified: Mapped[bool] = mapped_column(default=False)
     is_superuser: Mapped[bool] = mapped_column(default=False)
     is_staff: Mapped[bool] = mapped_column(default=False)
     role: Mapped[Role] = mapped_column(nullable=False, default=Role.JUNIOR)

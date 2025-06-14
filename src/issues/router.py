@@ -3,7 +3,6 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.auth.dependencies import get_current_user, optional_current_user
-from src.auth.permissions import RoleChecker
 from src.issues.dependencies import get_issue_crud, get_message_crud
 from src.issues.schemas import (
     IssueCreate,
@@ -12,6 +11,7 @@ from src.issues.schemas import (
     MessageResponse,
 )
 from src.issues.service import IssueBase, IssueCRUD, MessageCRUD
+from src.shared.permissions import RoleChecker
 from src.users.enums import Role
 from src.users.models import User
 

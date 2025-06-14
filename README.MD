@@ -8,7 +8,6 @@
 
 ## 🚀 Features
 
-
 - 🧠 **FastAPI 0.115+** async backend
 - 🔐 **JWT authentication** (pyjwt + passlib + OAuth2PasswordBearer)
 - 🛡️ **Role-based access**: Junior, Senior, Admin
@@ -19,11 +18,14 @@
   - 🧑‍💼 Full CRUD (Admin)
 - 💬 **Messages**: chat inside issues (Junior ⇄ Senior only)
 - 🧾 **Swagger UI** with full FormData support
--  🌐 **Optional access** for public (unauthorized) `/issues`
+- 🌐 **Optional access** for public (unauthorized) `/issues`
 - 🧬 **Alembic migrations** auto-generated
 - 🧹 **Linting**: `black`, `isort`, `ruff` via pre-commit
 - ⚙️ **.env-based config** using `pydantic-settings`
+- 📬 **Email activation**: Redis-based with Celery task and 1-day TTL
+- 🧪 **Dockerized** full stack with Redis, RabbitMQ, Mailhog, Celery
 - 🤖 **Planned**: OpenAI GPT-4 powered Q&A endpoint (`/ask`)
+
 ---
 
 ## 🧰 Tech Stack
@@ -32,27 +34,29 @@
 - **SQLAlchemy 2.0 async ORM**
 - **PostgreSQL** with Alembic migrations
 - **JWT** with `pyjwt`, `OAuth2PasswordBearer`
-- **Pydantic v2** for schema validation and env config
+- **Celery + RabbitMQ**
+- **Redis** for caching (activation)
+- **Mailhog** for email testing
+- **Docker Compose**
+- **Pydantic v2**
 - **Black**, **Isort**, **Ruff** for linting
 
-## 🧩 Project Structure
+## 📬 Email Verification
 
-```
-.
-├── alembic/                 # Migrations
-├── scripts/                 # Local run/start scripts
-├── src/
-│   ├── auth/                # Auth logic: login, tokens, permissions
-│   ├── users/               # User models, service, endpoints
-│   ├── issues/              # Issue + Message logic together
-│   ├── models/              # Shared base types (intpk, etc)
-│   ├── database.py
-│   ├── config.py            # Pydantic settings loader
-│   └── main.py              # Entry point
-├── Pipfile / Pipfile.lock   # Dependencies
-├── pyproject.toml           # Black, Ruff, Isort configs
-├── .pre-commit-config.yaml  # Pre-commit checks
-└── README.md
+- Upon registration, a user receives an email with an activation link
+- Token is stored in Redis with a 1-day TTL
+- Until verified, the user cannot log in
+- You can resend activation via `/auth/resend-activation-email`
+- You can verify via `/auth/complete-activation?token=...`
+
+---
+
+## 🐳 Docker Compose 
+
+```bash
+make up           # starts API, db, redis, mailhog, celery worker
+make worker       # starts only celery worker (if needed separately)
+make fix          # run lint/format checks
 ```
 
 ---
@@ -60,9 +64,8 @@
 ## 🛠 Local Setup
 
 ```bash
-pip install pipenv
-pipenv install --dev
-pipenv shell
+poetry install
+poetry shell
 
 # Setup DB
 alembic upgrade head
@@ -77,7 +80,7 @@ uvicorn src.main:app --reload
 
 ```bash
 pre-commit install
-pre-commit 
+pre-commit
 ```
 
 ---
@@ -94,15 +97,27 @@ POSTGRES_PASS=postgres
 SECRET_KEY=your-secret-key
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 ALGORITHM=HS256
+
+CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+CELERY_RESULT_BACKEND=rpc://
+
+MAIL_PORT=1025
+MAIL_SERVER=localhost
+MAIL_USERNAME=admin@example.com
+MAIL_PASSWORD=admin
+MAIL_FROM=admin@example.com
+
+REDIS_URL=redis://cache:6379/0
 ```
 
 ---
 
 ## 🔒 Auth
 
-- Register: `/api/users`
-- Login: `/api/auth/login`
-- Use token in Swagger UI Authorization (🔓 top-right)
+- Register: `/auth/signup`
+- Login: `/auth/login`
+- Resend activation: `/auth/resend-activation-email`
+- Confirm email: `/auth/complete-activation`
 
 ---
 
@@ -115,25 +130,7 @@ ALGORITHM=HS256
 
 ---
 
-## ✅ Todo (planned next)
+## ✅ Todo
 
-- [ ] Docker + Docker Compose
-- [ ] Redis + Celery (mail queue)
 - [ ] Pytest test suite
-- [ ] GitHub Actions CI
-- [ ] 🧠 OpenAI integration: `/ask` endpoint for internal AI Q&A (GPT-4)
----
-### 💡 Vision: AI Assistant
-
-Planned integration with OpenAI API for a `/ask` endpoint that allows users to:
-
-- Get instant answers to simple dev questions
-- Auto-suggest tags or titles when creating an issue
-- (Optional) Auto-generate a draft answer for seniors to review
-
-This endpoint will be role-protected and use GPT-4 via OpenAI SDK.
-
-## 💡 About
-
-This project started as an internal support tool.  
-After the company was shut down, the backend remained unused until I decided to publish it to show my backend architecture and FastAPI skills.
+- [ ] OpenAI `/ask` endpoint (GPT-4)

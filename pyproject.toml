@@ -8,7 +8,7 @@ package-mode = false
 
 
 [tool.poetry.dependencies]
-python = ">=3.11"
+python = ">=3.11,<4.0"
 fastapi = {extras = ["standard"], version = "*"}
 sqlalchemy = ">=2.0"
 alembic = "*"
@@ -21,6 +21,8 @@ psycopg2-binary = "*"
 gunicorn = "==22.0.0"
 asyncpg = "^0.30.0"
 bcrypt = "4.3.0"
+fastapi-mail = "^1.5.0"
+redis={extras =["hiredis"],version = "~=5.0"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -132,7 +134,7 @@ exclude = [
     "venv",
     "Makefile",
     "migrations",
-    "alembic"
+    "alembic/versions"
 ]
 
 
@@ -169,6 +171,7 @@ exclude = '''
     | build
     | dist
     | migrations
+    | alembic/versions
   )/
     # the root of the project
 )

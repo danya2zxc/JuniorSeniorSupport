@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
 from src.auth.dependencies import get_current_user
-from src.auth.permissions import RoleChecker
+from src.shared.permissions import RoleChecker
 from src.users.dependencies import get_user_crud
 from src.users.enums import Role
 from src.users.models import User
