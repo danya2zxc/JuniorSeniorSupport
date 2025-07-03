@@ -45,11 +45,20 @@ class EmailSetting(BaseSettings):
         extra = "ignore"
 
 
+class AISettings(BaseSettings):
+    openai_api_key: str
+
+    class Config:
+        env_file = Path(__file__).resolve().parents[1] / ".env"
+        extra = "ignore"
+
+
 class Settings(BaseSettings):
     db: DbSettings = DbSettings()  # type: ignore
     celery: CelerySettings = CelerySettings()  # type: ignore
     email: EmailSetting = EmailSetting()  # type: ignore
     cache: CacheSettings = CacheSettings()  # type: ignore
+    ai: AISettings = AISettings()  # type: ignore
 
     secret_key: str
     access_token_expire_minutes: int = Field(

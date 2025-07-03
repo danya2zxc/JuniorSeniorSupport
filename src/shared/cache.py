@@ -2,18 +2,19 @@ import json
 from typing import Any
 
 import redis
+import redis.asyncio
 
 from src.config import settings
 
 
 class CacheService:
     def __init__(self, connection_url: str = settings.cache.redis_url) -> None:
-        self.connection = redis.Redis.from_url(connection_url)
+        self.connection = redis.asyncio.from_url(connection_url)
 
     def _build_key(self, namespace: str, key: Any) -> str:
         return f"{namespace}:{key}"
 
-    def save(
+    async def save(
         self,
         namespace: str,
         key: Any,
@@ -22,13 +23,17 @@ class CacheService:
     ) -> None:
         payload = json.dumps(instance)
 
-        self.connection.set(self._build_key(namespace, key), payload, ex=ttl)
+        await self.connection.set(
+            self._build_key(namespace, key), payload, ex=ttl
+        )  # noqa: E501
 
-    def get(self, namespace: str, key: Any) -> dict | None:
-        result = self.connection.get(self._build_key(namespace, key))
+    async def get(self, namespace: str, key: Any) -> dict | None:
+        result = await self.connection.get(self._build_key(namespace, key))
         if not result:
             return None
         return json.loads(result)  # type: ignore
 
-    def delete(self, activation_token):
-        self.connection.delete(self._build_key("activation", activation_token))
+    async def delete(self, activation_token):
+        await self.connection.delete(
+            self._build_key("activation", activation_token)
+        )  # noqa: E501
