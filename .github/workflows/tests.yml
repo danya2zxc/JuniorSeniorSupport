@@ -32,6 +32,16 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Create .test.env file
+        run: |
+          echo "DB_HOST=localhost" >> .test.env
+          echo "DB_PORT=5432" >> .test.env
+          echo "DB_USER=postgres" >> .test.env
+          echo "DB_PASS=postgres" >> .test.env
+          echo "DB_NAME=test_db_postgres" >> .test.env
+
+
+
       - name: Run tests and generate coverage report
         run: poetry run pytest --cov=src --cov-report=xml
 

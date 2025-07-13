@@ -21,7 +21,7 @@ async def test_create_user(mock_send_email, ac: AsyncClient):
     response = await ac.post("/api/users", data=data)
 
     result = response.json()
-    print(result)
+
     assert response.status_code == 201
     assert result["email"] == data["email"]
     assert result["role"] == data["role"]
@@ -73,7 +73,7 @@ async def test_get_me_no_token(ac: AsyncClient):
 async def test_me_update_password(ac: AsyncClient, test_junior_auth_token):
     resp = await ac.patch(
         "/api/users/me/password",
-        headers={"Authorization": f"Bearer{test_junior_auth_token}"},
+        headers={"Authorization": f"Bearer {test_junior_auth_token}"},
         data={"old_password": "testpass123", "new_password": "testpass"},
     )
 
