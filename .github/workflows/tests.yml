@@ -32,13 +32,19 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Create .test.env file
+      - name: Create .test.env file for CI
         run: |
-          echo "DB_HOST=localhost" >> .test.env
-          echo "DB_PORT=5432" >> .test.env
-          echo "DB_USER=postgres" >> .test.env
-          echo "DB_PASS=postgres" >> .test.env
-          echo "DB_NAME=test_db_postgres" >> .test.env
+          echo "MODE=TEST" >> .test.env
+          echo "POSTGRES_HOST=localhost" >> .test.env
+          echo "POSTGRES_PORT=5432" >> .test.env
+          echo "POSTGRES_USER=postgres" >> .test.env
+          echo "POSTGRES_PASSWORD=postgres" >> .test.env
+          echo "POSTGRES_DB=test_db_jss" >> .test.env
+          echo "SECRET_KEY=test_secret_for_ci" >> .test.env
+          echo "ALGORITHM=HS256" >> .test.env
+          echo "REDIS_HOST=localhost" >> .test.env
+          echo "REDIS_PORT=6379" >> .test.env
+          echo "OPENAI_API_KEY=fake_key_for_ci" >> .test.env
 
 
 
