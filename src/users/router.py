@@ -30,6 +30,16 @@ async def users_list(
     return await user_crud.get_all(skip, limit)
 
 
+@router.get("/me", response_model=UserResponse)
+async def user_me(
+    user_crud: UserCRUD = Depends(get_user_crud),
+    current_user: User = Depends(get_current_user),
+):
+    user = await user_crud.get_by_email(current_user.email)
+
+    return user
+
+
 @router.get("/{user_id}", response_model=UserResponse)
 async def user_get_by_id(
     user_id: int,
@@ -42,7 +52,9 @@ async def user_get_by_id(
     return user
 
 
-@router.post("", response_model=UserResponse)
+@router.post(
+    "", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
 async def user_create(
     user_data: UserCreate = Depends(UserCreate.as_form),
     user_crud: UserCRUD = Depends(get_user_crud),
@@ -116,14 +128,5 @@ async def update_my_password(
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content={"detail": "Password changed successfully"},
+        content={"detail": "Password updated successfully"},
     )
-
-
-@router.get("/me", response_model=UserResponse)
-async def user_me(
-    user_crud: UserCRUD = Depends(get_user_crud),
-    current_user: User = Depends(get_current_user),
-):
-    user = await user_crud.get_by_email(current_user.email)
-    return user

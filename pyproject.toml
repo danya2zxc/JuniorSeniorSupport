@@ -24,6 +24,9 @@ bcrypt = "4.3.0"
 fastapi-mail = "^1.5.0"
 redis={extras =["hiredis"],version = "~=5.0"}
 openai = "^1.93.0"
+httpx = "^0.28.1"
+
+
 
 
 [tool.poetry.group.dev.dependencies]
@@ -32,13 +35,15 @@ isort = "~=5.13.2"
 ruff = "~=0.3.3"
 pre-commit = "*"
 watchdog = "^6.0.0"
-
-
+pytest-dotenv = "^0.5.2"
+pytest-asyncio = "^1.0.0"
+pytest = "^8.4.1"
+pytest-cov = "^6.2.1"
 [tool.tox]
 legacy_tox_ini = """
     [tox]
     min_version = 4.0
-    env_list = 
+    env_list =
         py311
     skipsdist = true
     basepython = python3.11
@@ -154,6 +159,7 @@ target-version = "py311"
 max-complexity = 10
 
 
+
 [tool.black]
 target-version = ['py311']
 line-length = 79
@@ -189,14 +195,17 @@ skip = '.venv,venv,env'
 src_paths = ["src"]
 
 [tool.pytest.ini_options]
-pythonpath = '..'
+pythonpath = '.'
+env_files = [".test.env"]
 
 addopts = '-s -v --cache-clear'
 asyncio_mode = 'auto'
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
 cache_dir = '/tmp'
 python_files = 'tests.py test_*.py *_test.py'
 python_functions = 'test_* *_test'
-filterwarnings = ['ignore::RuntimeWarning', 'ignore::UserWarning', 'ignore:DeprecationWarning',]
+filterwarnings = ['ignore::RuntimeWarning', 'ignore::UserWarning', "ignore:'crypt' is deprecated:DeprecationWarning",]
 
 [tool.coverage.run]
 omit = ["*/conftest.py", "*/test_*.py", "*/migrations/"]
@@ -221,4 +230,3 @@ omit = ["*/conftest.py", "*/test_*.py", "*/migrations/"]
 exclude = ["**/__pycache__", "**/venv/*", "**/migrations/*"]
 typeCheckingMode = "basic"                                   # off, basic, strict
 useLibraryCodeForTypes = true
-

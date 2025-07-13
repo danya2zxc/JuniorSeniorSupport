@@ -1,151 +1,113 @@
 # 🧠 JuniorSeniorSupport
 
-> Internal mentorship support tool for managing Issues between Juniors and Seniors.
-> Originally built for internal use at a startup focused on mentorship matching.
-> After the company closed, I decided to polish and publish the backend to demonstrate architecture skills.
+[![Python Version](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Framework](https://img.shields.io/badge/Framework-FastAPI-green.svg)](https://fastapi.tiangolo.com/)
+[![Tests](https://img.shields.io/badge/Tests-Pytest-informational.svg)](https://pytest.org/)
+[![codecov](https://codecov.io/gh/danya2zxc/JuniorSeniorSupport/graph/badge.svg)](https://codecov.io/gh/danya2zxc/JuniorSeniorSupport)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+
+> An internal mentorship support tool for managing Issues between Junior and Senior developers. Originally built for internal use at a startup, this project was later polished and published as a backend architecture and development skills showcase.
 
 ---
 
-## 🚀 Features
+## ✨ Key Features
 
-- 🧠 **FastAPI 0.115+** async backend
-- 🔐 **JWT authentication** (pyjwt + passlib + OAuth2PasswordBearer)
-- 🛡️ **Role-based access**: Junior, Senior, Admin
-- 👤 **Users**: register, login, patch, delete, change password
-- 📌 **Issues**:
-  - ✍️ Create (Junior)
-  - 🛠️ Take / ✅ Close (Senior)
-  - 🧑‍💼 Full CRUD (Admin)
-- 💬 **Messages**: chat inside issues (Junior ⇄ Senior only)
-- 🤖 **Assistant**: OpenAI-powered `/assistant/ask` endpoint for Q&A (JWT protected, 5 req/day for Juniors)
-- 🧾 **Swagger UI** with full FormData support
-- 🌐 **Optional access** for public (unauthorized) `/issues`
-- 🧬 **Alembic migrations** auto-generated
-- 🧹 **Linting**: `black`, `isort`, `ruff` via pre-commit
-- ⚙️ **.env-based config** using `pydantic-settings`
-- 📬 **Email activation**: Redis-based with Celery + RabbitMQ
-- 🧪 **Dockerized**: API, PostgreSQL, Redis, RabbitMQ, Celery, Mailhog
+- **Authentication & Authorization**: Secure system based on JWT tokens with role-based access control (Junior, Senior, Admin).
+- **User Management**: Full lifecycle from registration with email activation to password changes and profile deletion.
+- **Issue Tracking System**:
+  - **Junior**: Can create issues and participate in the chat.
+  - **Senior**: Can take issues, resolve them, and participate in the chat.
+  - **Admin**: Has full CRUD access to all issues.
+- **Internal Chat**: Exchange messages within each issue between the assigned Junior and Senior.
+- **AI Assistant**: OpenAI integration (`/assistant/ask`) to help resolve issues, protected by JWT and rate-limiting.
+- **Background Tasks**: Celery and RabbitMQ for asynchronous operations like sending emails without blocking the main application.
+- **Caching**: Redis for storing activation tokens and implementing rate-limiting.
+- **Database Migrations**: Alembic for managing the database schema.
+- **Comprehensive Test Coverage**: Code reliability ensured by integration and unit tests with Pytest.
+- **API Documentation**: Auto-generated interactive documentation via Swagger UI and ReDoc.
 
 ---
 
-## 🧰 Tech Stack
+## 🛠️ Tech Stack
 
-- **FastAPI** 0.115+ with async/await
-- **SQLAlchemy 2.0 async ORM**
-- **PostgreSQL** with Alembic migrations
-- **JWT** with `pyjwt`, `OAuth2PasswordBearer`
-- **Celery + RabbitMQ**
-- **Redis** for caching (activation, assistant rate limits)
-- **Mailhog** for email testing
-- **Docker Compose**
-- **Pydantic v2**
-- **Black**, **Isort**, **Ruff** for linting
+- **Backend**: FastAPI, Uvicorn
+- **Database**: PostgreSQL (asynchronous with `SQLAlchemy 2.0` and `asyncpg`)
+- **Migrations**: Alembic
+- **Background Tasks**: Celery
+- **Message Broker**: RabbitMQ
+- **Cache / In-memory DB**: Redis
+- **Typing & Config**: Pydantic V2
+- **Testing**: Pytest, `httpx`, `unittest.mock`
+- **Dependency Management**: Poetry
+- **Linting & Formatting**: Ruff, Black, isort (via `pre-commit`)
 
 ---
 
-## 🐳 Docker Compose
+## 🔌 Integrations
+
+- **AI Services**: OpenAI API for the assistant feature.
+
+---
+
+## 🚀 Getting Started / Local Setup
+
+### Prerequisites
+- Python 3.11+
+- Poetry
+- Docker and Docker Compose (for PostgreSQL, Redis, RabbitMQ)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/JuniorSeniorSupport.git
+    cd JuniorSeniorSupport
+    ```
+
+2.  **Create and configure the `.env` file:**
+    Copy the example environment file and fill in your details.
+    ```bash
+    cp .env.example .env
+    ```
+    *You will need to provide your database credentials, a secret key, and an OpenAI token.*
+
+3.  **Launch services with Docker:**
+    This command will start the PostgreSQL, Redis, and RabbitMQ containers.
+    ```bash
+    docker-compose up -d
+    ```
+
+4.  **Install project dependencies:**
+    Poetry will create a virtual environment and install all required packages.
+    ```bash
+    poetry install
+    ```
+
+5.  **Apply the database migrations:**
+    This command will create all the necessary tables in your database.
+    ```bash
+    poetry run alembic upgrade head
+    ```
+
+6.  **Run the application:**
+    ```bash
+    poetry run uvicorn src.main:app --reload
+    ```
+
+7.  **Run the Celery worker (in a separate terminal):**
+    ```bash
+    poetry run celery -A src.mailing.tasks worker -l INFO
+    ```
+
+The application is now available at `http://127.0.0.1:8000`, and the interactive API documentation is at `http://127.0.0.1:8000/docs`.
+
+---
+
+## ✅ Testing
+
+To run the entire test suite (both integration and unit tests), execute the following command:
 
 ```bash
-make up           # starts API, db, redis, mailhog, celery worker
-make worker       # starts only celery worker (if needed separately)
-make fix          # run lint/format checks
+poetry run pytest
 ```
-
----
-
-## 🛠 Local Setup
-
-```bash
-poetry install
-poetry shell
-
-# Setup DB
-alembic upgrade head
-
-# Run
-uvicorn src.main:app --reload
-```
-
----
-
-## 🧪 Lint + Pre-commit
-
-```bash
-pre-commit install
-pre-commit
-```
-
----
-
-## 📦 ENV Example
-
-```env
-# -------------------- PostgreSQL --------------------
-POSTGRES_HOST=database
-POSTGRES_PORT=5432
-POSTGRES_DB=support_jss
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-
-# -------------------- JWT ---------------------------
-SECRET_KEY=your-secret-key
-ACCESS_TOKEN_EXPIRE_MINUTES=1440
-ALGORITHM=HS256
-
-# -------------------- RabbitMQ ----------------------
-RABBITMQ_DEFAULT_USER=guest
-RABBITMQ_DEFAULT_PASS=guest
-
-# -------------------- Celery ------------------------
-CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
-CELERY_RESULT_BACKEND=rpc://
-
-# -------------------- Mailing ------------------------
-MAIL_USERNAME=dummy
-MAIL_PASSWORD=dummy
-MAIL_FROM=test@example.com
-MAIL_PORT=1025
-MAIL_SERVER=localhost
-
-# -------------------- Redis -------------------------
-REDIS_URL=redis://cache:6379/0
-
-# -------------------- OpenAI API --------------------
-OPENAI_API_KEY=your-secret-key
-```
-
-ℹ️ **Note:** Replace `OPENAI_API_KEY` with your actual key for assistant functionality.
-
----
-
-## 🔒 Auth
-
-- Register: `/auth/signup`
-- Login: `/auth/login`
-- Resend activation: `/auth/resend-activation-email`
-- Confirm email: `/auth/complete-activation`
-
----
-
-## 📬 Issues Flow
-
-1. Junior creates issue
-2. Senior takes it (`PUT /issues/{id}/take`)
-3. Both exchange messages (`POST /issues/{id}/messages`)
-4. Senior closes issue
-
----
-
-## ✅ Roadmap
-
-- [x] Celery + RabbitMQ for mailing
-- [x] Redis caching (activation flow, rate limiting)
-- [x] Assistant `/assistant/ask` endpoint (OpenAI)
-- [ ] Pytest test suite
----
-
-## 💡 About
-
-This project started as an internal support tool.
-After the company was shut down, I decided to polish and publish it to showcase backend architecture skills with FastAPI.
-

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from src.users.enums import RegisterRole, Role
 
@@ -38,8 +38,7 @@ class UserResponse(UserBase):
     date_joined: datetime
     role: Role
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserUpdate(BaseModel):
@@ -63,8 +62,7 @@ class UserUpdate(BaseModel):
             email=email,
         )
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserPasswordUpdate(BaseModel):

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.issues.enums import Status
 
@@ -11,8 +11,7 @@ class IssueBase(BaseModel):
     body: str
     status: Status = Status.OPENED
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class IssueCreate(BaseModel):
@@ -23,8 +22,7 @@ class IssueCreate(BaseModel):
     def as_form(cls, title: str = Form(...), body: str = Form(...)):
         return cls(title=title, body=body)
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class IssueResponse(IssueBase):
@@ -57,5 +55,4 @@ class MessageResponse(MessageBase):
     user_id: int
     issue_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -40,8 +40,11 @@ class UserCRUD:
 
         activation = ActivationService()
         token = activation.create_token(user_data.email)
-        activation.send_user_activation_email(user_data.email, token)
-        activation.save_activation_information(new_user.id, token)
+        await activation.send_user_activation_email(user_data.email, token)
+        await activation.save_activation_information(
+            new_user.id,
+            activation_token=token,
+        )
 
         return new_user
 

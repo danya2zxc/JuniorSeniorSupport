@@ -21,7 +21,6 @@ async def ask_gpt(
         )
     ),
 ):
-
     await gpt_crud.check_limit(current_user.id)
 
     response = await gpt_crud.ask_gpt(question, user_id=current_user.id)
