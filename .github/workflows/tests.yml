@@ -34,18 +34,34 @@ jobs:
 
       - name: Create .test.env file for CI
         run: |
+          # --- General ---
           echo "MODE=TEST" >> .test.env
+          echo "SECRET_KEY=a_very_secret_key_for_ci" >> .test.env
+          echo "ALGORITHM=HS256" >> .test.env
+
+          # --- Database (DbSettings) ---
           echo "POSTGRES_HOST=localhost" >> .test.env
           echo "POSTGRES_PORT=5432" >> .test.env
           echo "POSTGRES_USER=postgres" >> .test.env
           echo "POSTGRES_PASSWORD=postgres" >> .test.env
           echo "POSTGRES_DB=test_db_jss" >> .test.env
-          echo "SECRET_KEY=test_secret_for_ci" >> .test.env
-          echo "ALGORITHM=HS256" >> .test.env
-          echo "REDIS_HOST=localhost" >> .test.env
-          echo "REDIS_PORT=6379" >> .test.env
-          echo "OPENAI_API_KEY=fake_key_for_ci" >> .test.env
 
+          # --- Cache (CacheSettings) ---
+          echo "REDIS_URL=redis://localhost:6379/0" >> .test.env
+
+          # --- Celery (CelerySettings) ---
+          echo "CELERY_BROKER_URL=redis://localhost:6379/0" >> .test.env
+          echo "CELERY_RESULT_BACKEND=redis://localhost:6379/0" >> .test.env
+
+          # --- Email (EmailSetting) ---
+          echo "MAIL_USERNAME=test@example.com" >> .test.env
+          echo "MAIL_PASSWORD=fakepassword" >> .test.env
+          echo "MAIL_FROM=test@example.com" >> .test.env
+          echo "MAIL_PORT=1025" >> .test.env
+          echo "MAIL_SERVER=localhost" >> .test.env
+
+          # --- AI (AISettings) ---
+          echo "OPENAI_API_KEY=fake_openai_key_for_ci" >> .test.env
 
 
       - name: Run tests and generate coverage report
