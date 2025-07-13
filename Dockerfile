@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install system dependencies
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends \ 
+    apt-get install -y --no-install-recommends \
     build-essential \
     curl && \
     # cleaning up unused files
@@ -41,5 +41,5 @@ COPY ./ ./
 EXPOSE 8000
 
 
-# Run app 
+# Run app
 CMD ["uvicorn", "src.main:app", "--reload", "--port", "8000", "--host", "0.0.0.0", "--log-level=debug"]

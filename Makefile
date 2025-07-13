@@ -22,7 +22,7 @@ fix:
 	python -m ruff --fix . && python -m black . && python -m isort .
 
 test:
-	pytest -v
+	pytest -s -v -W ignore::DeprecationWarning --envfile .test.env
 
 # ===============================
 # Docker

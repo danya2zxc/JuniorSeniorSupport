@@ -113,6 +113,13 @@ async def issue_close(
     issue_crud: IssueCRUD = Depends(get_issue_crud),
     current_user: User = Depends(RoleChecker(Role.SENIOR)),
 ):
+    issue = await issue_crud.get_by_id(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+
+    if issue.senior_id != current_user.id:
+        raise HTTPException(status_code=422, detail="Can't close this issue")
+
     return await issue_crud.close_issue(issue_id, current_user.id)
 
 
@@ -122,7 +129,16 @@ async def issue_message_post(
     message_data: MessageCreate,
     message_crud: MessageCRUD = Depends(get_message_crud),
     current_user: User = Depends(get_current_user),
+    issue_crud: IssueCRUD = Depends(get_issue_crud),
 ):
+    issue = await issue_crud.get_by_id(issue_id)
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+
+    if current_user.id not in (issue.junior_id, issue.senior_id):
+        raise HTTPException(
+            status_code=403, detail="You are not a participant in this issue"
+        )
     return await message_crud.create_for_issue(
         issue_id, current_user, message_data
     )

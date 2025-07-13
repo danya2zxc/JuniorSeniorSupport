@@ -20,7 +20,6 @@ class GPTCRUD:
         )
 
     async def ask_gpt(self, question: str, user_id: int):
-
         completions = await self.client.chat.completions.create(
             model="gpt-4o-mini",
             max_tokens=10000,

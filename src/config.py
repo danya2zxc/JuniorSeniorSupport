@@ -1,36 +1,28 @@
-from pathlib import Path
-
-from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DbSettings(BaseSettings):
+    MODE: str
     postgres_host: str
     postgres_port: int
     postgres_db: str
     postgres_user: str
     postgres_password: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 class CacheSettings(BaseSettings):
     redis_url: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 class CelerySettings(BaseSettings):
     celery_broker_url: str
     celery_result_backend: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 class EmailSetting(BaseSettings):
@@ -40,17 +32,13 @@ class EmailSetting(BaseSettings):
     mail_port: int
     mail_server: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 class AISettings(BaseSettings):
     openai_api_key: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 class Settings(BaseSettings):
@@ -59,16 +47,13 @@ class Settings(BaseSettings):
     email: EmailSetting = EmailSetting()  # type: ignore
     cache: CacheSettings = CacheSettings()  # type: ignore
     ai: AISettings = AISettings()  # type: ignore
+    MODE: str
 
     secret_key: str
-    access_token_expire_minutes: int = Field(
-        1440, env="ACCESS_TOKEN_EXPIRE_MINUTES"
-    )  # type: ignore
+    access_token_expire_minutes: int = 1440
     algorithm: str
 
-    class Config:
-        env_file = Path(__file__).resolve().parents[1] / ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(extra="ignore")
 
 
 settings = Settings()  # type: ignore

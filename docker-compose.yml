@@ -8,7 +8,7 @@ services:
     ports:
       - '6379:6379'
 
-  
+
   database:
     image: 'postgres:14'
     container_name: support_database
@@ -18,7 +18,7 @@ services:
       - '.env'
     volumes:
       - 'pg_data:/var/lib/postgresql/data'
-    
+
   api: &api_base
     build:
       context: .
@@ -63,4 +63,4 @@ services:
       - "8025:8025"
 volumes:
   pg_data: {}
-  rabbitmq-data: 
+  rabbitmq-data:

@@ -1,14 +1,15 @@
 import json
 from typing import Any
 
-import redis
 import redis.asyncio
 
 from src.config import settings
 
 
 class CacheService:
-    def __init__(self, connection_url: str = settings.cache.redis_url) -> None:
+    def __init__(self, connection_url: str | None = None) -> None:
+        if connection_url is None:
+            connection_url = settings.cache.redis_url
         self.connection = redis.asyncio.from_url(connection_url)
 
     def _build_key(self, namespace: str, key: Any) -> str:

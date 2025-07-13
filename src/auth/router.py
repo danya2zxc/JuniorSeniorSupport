@@ -59,18 +59,17 @@ async def resend_activation_email(
         raise HTTPException(400, "User is already verified email")
 
     activation = ActivationService()
-    token = activation.create_token(email)
+    token = await activation.create_token(email)
 
-    activation.send_user_activation_email(email, token)
-    activation.save_activation_information(user.id, token)
+    await activation.send_user_activation_email(email, token)
+    await activation.save_activation_information(user.id, token)
 
 
 @router.patch("/complete-activation", status_code=200)
 async def complete_activation(
     token: uuid.UUID, user_crud: UserCRUD = Depends(get_user_crud)
 ):
-
-    result = ActivationService().validate_activation(token)
+    result = await ActivationService().validate_activation(token)
     if not result:
         raise HTTPException(
             status_code=404, detail="Invalid or expired activation link"
