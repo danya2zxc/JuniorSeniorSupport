@@ -61,7 +61,7 @@
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/JuniorSeniorSupport.git
+    git clone https://github.com/danya2zxc/JuniorSeniorSupport.git
     cd JuniorSeniorSupport
     ```
 
